@@ -15,13 +15,13 @@
     </form>
     <form action="<%= root_path %>disappeared-jobs/requeue-all" method="post">
       <%= csrf_tag %>
-      <input class="btn btn-danger pull-right flip" type="submit" name="retry" value="<%= t('requeue_all') %>" data-confirm="<%= t('requeue_confirmation') %>" />
+      <input class="btn btn-danger pull-right flip" type="submit" name="retry" value="<%= t('requeue_all') %>" data-confirm="<%= t('requeue_all_confirmation') %>" />
     </form>
   <% end %>
 
   <form action="<%= root_path %>disappeared-jobs" method="POST">
-    <input class="btn btn-primary pull-left flip" type="submit" name="retry" value="<%= t('requeue') %>" />
-    <input class="btn btn-danger pull-left flip" type="submit" name="delete" value="<%= t('delete') %>" />
+    <input class="btn btn-primary pull-left flip" type="submit" name="retry" value="<%= t('requeue') %>" data-confirm="<%= t('requeue_confirmation') %>" />
+    <input class="btn btn-danger pull-left flip" type="submit" name="delete" value="<%= t('delete') %>" data-confirm="<%= t('delete_confirmation') %>" />
     <br/>
     <br/>
     <%= csrf_tag %>
@@ -76,7 +76,7 @@
     </form>
     <form action="<%= root_path %>disappeared-jobs/requeue-all" method="post">
       <%= csrf_tag %>
-      <input class="btn btn-danger pull-right flip" type="submit" name="retry" value="<%= t('requeue_all') %>" data-confirm="<%= t('requeue_confirmation') %>" />
+      <input class="btn btn-danger pull-right flip" type="submit" name="retry" value="<%= t('requeue_all') %>" data-confirm="<%= t('requeue_all_confirmation') %>" />
     </form>
   <% end %>
 <% else %>

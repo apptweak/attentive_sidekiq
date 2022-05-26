@@ -25,7 +25,7 @@ module AttentiveSidekiq
       
       app.post("/disappeared-jobs/requeue-all") do
         AttentiveSidekiq::Disappeared.jobs.each do |job|
-          if job['status'] == 'detected'
+          if job['status'] == AttentiveSidekiq::Disappeared.STATUS_DETECTED
             AttentiveSidekiq::Disappeared.requeue(job['jid'])
           end
         end
