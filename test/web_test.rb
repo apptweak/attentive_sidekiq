@@ -28,9 +28,10 @@ class WebTest < Minitest::Test
     refute_match @item_in_progress['jid'], last_response.body
   end
 
-  def test_delete_all_route_functions_fine
+  def test_delete_jid_route_functions_fine
     AttentiveSidekiq::Disappeared.stub(:remove, nil) do
-      post "/disappeared-jobs/delete-all"
+      jids_to_delete = ([] << @item_disappeared['jid'])
+      post "/disappeared-jobs", "retry" => "lorem-ipsum", "job_jids" => jids_to_delete
       follow_redirect!
       assert_equal 200, last_response.status
     end

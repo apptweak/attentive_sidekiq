@@ -1,11 +1,12 @@
 en:
   jid: JID
-  queue: Queue name
+  queue: Queue
   class: Class name
   arguments: Arguments
   disappeared_jobs: Disappeared jobs
-  created_at: Created at
-  noticed_at: Noticed disappeared at
+  created_at: Created
+  noticed_at: Noticed
+  retry_count: Retry Count
   time_unknown: Time unknown
   actions: Actions
   delete: Delete
@@ -19,4 +20,4 @@ en:
   requeue_all: Requeue all
   delete_all_confirmation: Are you sure you want to delete all disappeared jobs?
   requeue_all_confirmation: Are you sure you want to requeue all disappeared jobs?
-  no_disappeared_jobs: No dissapeared jobs.
+  no_disappeared_jobs: No disappeared jobs.
