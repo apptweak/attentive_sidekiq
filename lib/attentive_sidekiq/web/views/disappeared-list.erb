@@ -1,58 +1,84 @@
-<h3><%= t('disappeared_jobs') %></h3>
+<header class="row">
+  <div class="col-sm-5">
+    <h3>
+      <%= t('disappeared_jobs') %>
+      <span class="badge badge-secondary"> <%= @total_size %></span>
+    </h3>
+  </div>
+</header>
 
-<% if @disappeared_jobs.count > 0 %>
-  <div class="table_container">
-    <table class="table table-hover table-bordered table-striped table-white">
-      <thead>
-        <tr>
-          <th><%= t('jid') %></th>
-          <th><%= t('queue') %></th>
-          <th><%= t('class') %></th>
-          <th><%= t('arguments') %></th>
-          <th><%= t('created_at') %></th>
-          <th><%= t('noticed_at') %></th>
-          <th><%= t('status') %></th>
-          <th><%= t('actions') %></th>
-        </tr>
-      </thead>
+<% if @disappeared_jobs.size > 0 %>
+  <% unfiltered? do %>
+    <form action="<%= root_path %>disappeared-jobs/delete-all" method="post">
+      <%= csrf_tag %>
+      <input class="btn btn-danger pull-right flip" type="submit" name="delete" value="<%= t('delete_all') %>" data-confirm="<%= t('delete_all_confirmation') %>" />
+    </form>
+    <form action="<%= root_path %>disappeared-jobs/requeue-all" method="post">
+      <%= csrf_tag %>
+      <input class="btn btn-danger pull-right flip" type="submit" name="retry" value="<%= t('requeue_all') %>" data-confirm="<%= t('requeue_confirmation') %>" />
+    </form>
+  <% end %>
 
-      <tbody>
+  <form action="<%= root_path %>disappeared-jobs" method="POST">
+    <input class="btn btn-primary pull-left flip" type="submit" name="retry" value="<%= t('requeue') %>" />
+    <input class="btn btn-danger pull-left flip" type="submit" name="delete" value="<%= t('delete') %>" />
+    <br/>
+    <br/>
+    <%= csrf_tag %>
+    <div class="table_container">
+      <table class="table table-striped table-bordered table-hover">
+        <thead>
+          <tr>
+            <th class="table-checkbox checkbox-column">
+              <label>
+                <input type="checkbox" class="check_all" />
+              </label>
+            </th>
+            <th><%= t('jid') %></th>
+            <th><%= t('queue') %></th>
+            <th><%= t('class') %></th>
+            <th><%= t('arguments') %></th>
+            <th><%= t('created_at') %></th>
+            <th><%= t('noticed_at') %></th>
+            <th><%= t('status') %></th>
+            <th><%= t('retry_count') %></th>
+          </tr>
+        </thead>
         <% @disappeared_jobs.each do |job| %>
           <tr>
-            <td><%= job['jid'] %></td>
-            <td><%= job['queue'] %></td>
-            <td><%= job['class'] %></td>
-            <td><%= job['args'] %></td>
-            <td><%= job['created_at'] ? Time.at(job['created_at']).strftime("%H:%M:%S %d.%m.%Y %z") : t("time_unknown") %></td>
-            <td><%= job['noticed_at'] ? Time.at(job['noticed_at']).strftime("%H:%M:%S %d.%m.%Y %z") : t("time_unknown") %></td>
-            <th><%= job['status'] ? t(job['status']) : t('detected') %></th>
-            <td>
-              <form action="<%= "#{root_path}disappeared-jobs/#{job['jid']}/delete" %>" method="post">
-                <%= csrf_tag %>
-                <input class="btn btn-danger btn-xs" type="submit" name="delete" value="<%= t('delete') %>" style="width:100%" data-confirm="<%= t('delete_confirmation') %>" />
-              </form>
-              <% if job['status'] != AttentiveSidekiq::Disappeared::STATUS_REQUEUED %>
-                <form action="<%= "#{root_path}disappeared-jobs/#{job['jid']}/requeue" %>" method="post">
-                  <%= csrf_tag %>
-                  <input class="btn btn-xs" type="submit" name="requeue" value="<%= t('requeue') %>" style="width:100%" data-confirm="<%= t('requeue_confirmation') %>" />
-                </form>
-              <% end %>
+            <td class="table-checkbox">
+              <label>
+                <input type='checkbox' name='key[]' value='<%= job['jid'] %>' />
+              </label>
             </td>
+            <td><%= job['jid'] %></td>
+            <td>
+              <a href="<%= root_path %>queues/<%= job['queue'] %>"><%= job['queue'] %></a>
+            </td>
+            <td><%= job['class'] %></td>
+            <td><div class="args"><%= display_args(job['args']) %></div></td>
+            <td><%= job['created_at'] ? relative_time(Time.at(job['created_at'])) : t("time_unknown") %></td>
+            <td><%= job['noticed_at'] ? relative_time(Time.at(job['noticed_at'])) : t("time_unknown") %></td>
+            <th><%= job['status'] ? t(job['status']) : t('detected') %></th>
+            <td><%= job['retry_count'] %></td>
           </tr>
         <% end %>
-      </tbody>
-    </table>
-  </div>
-
-  <form action="<%= "#{root_path}disappeared-jobs/delete-all" %>" method="post">
-    <%= csrf_tag %>
-    <input class="btn btn-danger btn-xs pull-right" type="submit" name="delete" value="<%= t('delete_all') %>" data-confirm="<%= t('delete_all_confirmation') %>">
+      </table>
+    </div>
+    <input class="btn btn-primary pull-left flip" type="submit" name="retry" value="<%= t('requeue') %>" />
+    <input class="btn btn-danger pull-left flip" type="submit" name="delete" value="<%= t('delete') %>" />
   </form>
 
-  <form action="<%= "#{root_path}disappeared-jobs/requeue-all" %>" method="post">
-    <%= csrf_tag %>
-    <input class="btn btn-danger btn-xs pull-right" type="submit" name="retry" value="<%= t('requeue_all') %>" data-confirm="<%= t('requeue_confirmation') %>">
-  </form>
+  <% unfiltered? do %>
+    <form action="<%= root_path %>disappeared-jobs/delete-all" method="post">
+      <%= csrf_tag %>
+      <input class="btn btn-danger pull-right flip" type="submit" name="delete" value="<%= t('delete_all') %>" data-confirm="<%= t('delete_all_confirmation') %>" />
+    </form>
+    <form action="<%= root_path %>disappeared-jobs/requeue-all" method="post">
+      <%= csrf_tag %>
+      <input class="btn btn-danger pull-right flip" type="submit" name="retry" value="<%= t('requeue_all') %>" data-confirm="<%= t('requeue_confirmation') %>" />
+    </form>
+  <% end %>
 <% else %>
   <div class="alert alert-success"><%= t('no_disappeared_jobs') %></div>
 <% end %>

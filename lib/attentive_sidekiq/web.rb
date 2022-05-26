@@ -5,9 +5,24 @@ module AttentiveSidekiq
     def self.registered(app)
       app.get("/disappeared-jobs") do
         @disappeared_jobs = AttentiveSidekiq::Disappeared.jobs
+        @total_size = @disappeared_jobs.size
+
         erb File.read(File.join(VIEW_PATH, 'disappeared-list.erb'))
       end
 
+      app.post("/disappeared-jobs") do
+        pp params
+        params["key"]&.each do |jid|
+          pp jid
+          if params["retry"]
+            AttentiveSidekiq::Disappeared.requeue(jid)
+          elsif params["delete"]
+            AttentiveSidekiq::Disappeared.remove(jid)
+          end
+        end
+        redirect "#{root_path}disappeared-jobs"
+      end
+      
       app.post("/disappeared-jobs/requeue-all") do
         AttentiveSidekiq::Disappeared.jobs.each do |job|
           if job['status'] == 'detected'
