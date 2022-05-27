@@ -22,6 +22,18 @@ class WebTest < Minitest::Test
     assert_match @item_disappeared['jid'], last_response.body
   end
 
+  def test_display_job_detail_in_disappeared_hash
+    get "/disappeared-jobs/#{@item_disappeared["jiid"]}"
+    assert_equal 200, last_response.status
+    assert_match @item_disappeared['jid'], last_response.body
+  end
+
+  def test_display_jobs_for_unknow_jid_in_disappeared_hash
+    get "/disappeared-jobs/lorem-ipsum"
+    follow_redirect!
+    assert_equal 200, last_response.status
+  end
+
   def test_does_not_display_jobs_not_in_disappeared_hash
     get '/disappeared-jobs'
     assert_equal 200, last_response.status

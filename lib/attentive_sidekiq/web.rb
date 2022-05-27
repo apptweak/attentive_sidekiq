@@ -23,6 +23,13 @@ module AttentiveSidekiq
         redirect "#{root_path}disappeared-jobs"
       end
       
+      app.get("/disappeared-jobs/:key") do
+        @job = AttentiveSidekiq::Disappeared.get_job params[:key]
+        redirect "#{root_path}disappeared-jobs" if @job.nil?
+
+        erb File.read(File.join(VIEW_PATH, "disappeared-detail.erb"))
+      end
+
       app.post("/disappeared-jobs/requeue-all") do
         AttentiveSidekiq::Disappeared.jobs.each do |job|
           if job['status'] == AttentiveSidekiq::Disappeared.STATUS_DETECTED
