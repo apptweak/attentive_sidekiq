@@ -51,7 +51,9 @@
                 <input type='checkbox' name='key[]' value='<%= job['jid'] %>' />
               </label>
             </td>
-            <td><%= job['jid'] %></td>
+            <td>
+              <a href="<%= root_path %>disappeared-jobs/<%= job['jid'] %>"><%= job['jid'] %></a>
+            </td>
             <td>
               <a href="<%= root_path %>queues/<%= job['queue'] %>"><%= job['queue'] %></a>
             </td>
@@ -59,14 +61,14 @@
             <td><div class="args"><%= display_args(job['args']) %></div></td>
             <td><%= job['created_at'] ? relative_time(Time.at(job['created_at'])) : t("time_unknown") %></td>
             <td><%= job['noticed_at'] ? relative_time(Time.at(job['noticed_at'])) : t("time_unknown") %></td>
-            <th><%= job['status'] ? t(job['status']) : t('detected') %></th>
+            <td><%= job['status'] ? t(job['status']) : t('detected') %></td>
             <td><%= job['retry_count'] %></td>
           </tr>
         <% end %>
       </table>
     </div>
-    <input class="btn btn-primary pull-left flip" type="submit" name="retry" value="<%= t('requeue') %>" />
-    <input class="btn btn-danger pull-left flip" type="submit" name="delete" value="<%= t('delete') %>" />
+    <input class="btn btn-primary pull-left flip" type="submit" name="retry" value="<%= t('requeue') %>" data-confirm="<%= t('requeue_confirmation') %>" />
+    <input class="btn btn-danger pull-left flip" type="submit" name="delete" value="<%= t('delete') %>" data-confirm="<%= t('delete_confirmation') %>" />
   </form>
 
   <% unfiltered? do %>

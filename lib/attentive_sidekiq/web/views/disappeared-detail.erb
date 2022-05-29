@@ -1,0 +1,102 @@
+<header>
+  <h3><%= t('job') %></h3>
+</header>
+
+<div class="table_container">
+  <table class="table table-bordered table-striped table-hover">
+    <tbody>
+      <tr>
+        <th><%= t('queue') %></th>
+        <td>
+          <a href="<%= root_path %>queues/<%= @job['queue'] %>"><%= @job['queue'] %></a>
+        </td>
+      </tr>
+      <tr>
+        <th><%= t('job') %></th>
+        <td>
+          <%= @job['class'] %>
+          <%= (@job['tags'] || []).map { |tag|
+                  "<span class='label label-info jobtag'>#{::Rack::Utils.escape_html(tag)}</span>"
+              }.join(" ") 
+          %>
+        </td>
+      </tr>
+      <tr>
+        <th><%= t('arguments') %></th>
+        <td>
+          <code class="code-wrap">
+            <!-- We don't want to truncate any job arguments when viewing a single job's status page -->
+            <div class="args-extended"><%= display_args(@job['args']) %></div>
+          </code>
+        </td>
+      <tr>
+        <th><%= t('jid') %></th>
+        <td>
+          <code><%= @job['jid'] %></code>
+        </td>
+      </tr>
+      </tr>
+      <tr>
+        <th><%= t('status') %></th>
+        <td>
+          <%= @job['status'] ? t(@job['status']) : t('detected') %>
+        </td>
+      </tr>
+      <tr>
+        <th><%= t('created_at') %></th>
+        <td><%= @job['created_at'] ? relative_time(Time.at(@job['created_at'])) : t("time_unknown") %></td>
+      </tr>
+      <tr>
+        <th><%= t('noticed_at') %></th>
+        <td><%= @job['noticed_at'] ? relative_time(Time.at(@job['noticed_at'])) : t("time_unknown") %></td>
+      </tr>
+      <tr>
+        <th><%= t('enqueued') %></th>
+        <td><%= (enqueued_at = @job['enqueued_at'] || 0) ? relative_time(Time.at(enqueued_at)) : t('notyetenqueued') %></td>
+      </tr>
+
+      <% if @job['retry_count'] && @job['retry_count'] > 0 %>
+        <tr>
+          <th><%= t('retry_count') %></th>
+          <td><%= @job['retry_count'] %></td>
+        </tr>
+        <tr>
+          <th><%= t('last_retry') %></th>
+          <td><%= relative_time(Time.at(@job['retried_at'])) %></td>
+        </tr>
+      <% else %>
+        <tr>
+          <th><%= t('originally_failed') %></th>
+          <td><%= relative_time(Time.at(@job['noticed_at'])) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<h3><%= t('Error') %></h3>
+
+<div class="table_container">
+  <table class="error table table-bordered table-striped table-hover">
+    <tbody>
+      <tr>
+        <th><%= t('error_class') %></th>
+        <td>
+          <code><%= h @job['error_class'] %></code>
+        </td>
+      </tr>
+      <tr>
+        <th><%= t('error_message') %></th>
+        <td><%= h(@job['error_message']) %></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<form class="form-horizontal" action="<%= root_path %>disappeared-jobs" method="POST">
+  <%= csrf_tag %>
+  <input type="hidden" name='key[]' value='<%= @job['jid'] %>' />
+  <a class="btn btn-default" href="<%= root_path %>disappeared-jobs"><%= t('go_back') %></a>
+  <input class="btn btn-primary" type="submit" name="retry" value="<%= t('requeue') %>" />
+  <input class="btn btn-danger" type="submit" name="delete" value="<%= t('delete') %>" />
+</form>

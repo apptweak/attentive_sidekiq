@@ -87,5 +87,20 @@ class ApiTest < Minitest::Test
         AttentiveSidekiq::Disappeared.get_job(item['jid'])['status']
       end
     end
+
+    describe "get_job" do
+
+      it "returns the right found job" do
+        AttentiveSidekiq::Disappeared.add(@item_in_progress)
+        match =  AttentiveSidekiq::Disappeared.get_job(@item_in_progress["jid"])
+        refute_nil match
+        assert_equal @item_in_progress["jid"], match["jid"]
+      end
+
+      it "returns nil for nott found job" do
+        fake_jid = "lorem-ipsum"
+        assert_nil AttentiveSidekiq::Disappeared.get_job(fake_jid)
+      end
+    end
   end
 end

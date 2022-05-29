@@ -21,3 +21,12 @@ en:
   delete_all_confirmation: Are you sure you want to delete all disappeared jobs?
   requeue_all_confirmation: Are you sure you want to requeue all disappeared jobs?
   no_disappeared_jobs: No disappeared jobs.
+  job: Job
+  error: Error
+  error_class: Error Class
+  error_message: Error Message
+  error_backtrace: Error Backtrace
+  originally_failed: Originally Failed
+  enqueued: Enqueued
+  show_all: Show All
+  go_back: ← Back

@@ -10,7 +10,8 @@ module AttentiveSidekiq
       end
 
       def get_job jid
-        JSON.parse(Sidekiq.redis{|conn| conn.hget(hash_name, jid)})
+        job = Sidekiq.redis{|conn| conn.hget(hash_name, jid)}
+        JSON.parse(job) if job
       end
 
       def add item
