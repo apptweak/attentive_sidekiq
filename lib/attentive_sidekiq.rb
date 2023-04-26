@@ -37,7 +37,7 @@ module AttentiveSidekiq
     end
 
     def options
-      Sidekiq.options[:attentive] || Sidekiq.options['attentive'] || {}
+      Sidekiq.instance_variable_get(:@options).try(:attentive) || Sidekiq.instance_variable_get(:@options).try("attentive") || {}
     end
   end
 end
