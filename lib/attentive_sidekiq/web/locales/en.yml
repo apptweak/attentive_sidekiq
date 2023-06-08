@@ -8,6 +8,7 @@ en:
   noticed_at: Noticed
   retry_count: Retry Count
   time_unknown: Time unknown
+  noticed_unknown: time unknown
   actions: Actions
   delete: Delete
   delete_confirmation: Are you sure you want to delete this record?

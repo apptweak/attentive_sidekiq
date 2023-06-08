@@ -50,6 +50,24 @@
               <label>
                 <input type='checkbox' name='key[]' value='<%= job['jid'] %>' />
               </label>
+            <td><%= job['jid'] %></td>
+            <td><%= job['queue'] %></td>
+            <td><%= job['class'] %></td>
+            <td><%= job['args'] %></td>
+            <td><%= job['created_at'] ? Time.at(job['created_at']).strftime("%H:%M:%S %d.%m.%Y %z") : t("time_unknown") %></td>
+            <td><%= job['noticed_at'] ? Time.at(job['noticed_at']).strftime("%H:%M:%S %d.%m.%Y %z") : t("time_unknown") %></td>
+            <th><%= job['status'] ? t(job['status']) : t('detected') %></th>
+            <td>
+              <form action="<%= "#{root_path}disappeared-jobs/#{job['jid']}/delete" %>" method="post">
+                <%= csrf_tag %>
+                <input class="btn btn-danger btn-xs" type="submit" name="delete" value="<%= t('delete') %>" style="width:100%" data-confirm="<%= t('delete_confirmation') %>" />
+              </form>
+              <% if job['status'] != AttentiveSidekiq::Disappeared::STATUS_REQUEUED %>
+                <form action="<%= "#{root_path}disappeared-jobs/#{job['jid']}/requeue" %>" method="post">
+                  <%= csrf_tag %>
+                  <input class="btn btn-xs" type="submit" name="requeue" value="<%= t('requeue') %>" style="width:100%" data-confirm="<%= t('requeue_confirmation') %>" />
+                </form>
+              <% end %>
             </td>
             <td>
               <a href="<%= root_path %>disappeared-jobs/<%= job['jid'] %>"><%= job['jid'] %></a>
