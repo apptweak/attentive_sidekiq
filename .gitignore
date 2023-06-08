@@ -1,4 +1,5 @@
 *.gem
+.ruby-version
 .bundle
 .config
 Gemfile.lock

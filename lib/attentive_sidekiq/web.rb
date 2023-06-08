@@ -4,7 +4,7 @@ module AttentiveSidekiq
 
     def self.registered(app)
       app.get("/disappeared-jobs") do
-        @disappeared_jobs = AttentiveSidekiq::Disappeared.jobs
+        @disappeared_jobs = AttentiveSidekiq::Disappeared.jobs.sort_by { |j| -j["noticed_at"] }
         @total_size = @disappeared_jobs.size
 
         erb File.read(File.join(VIEW_PATH, 'disappeared-list.erb'))
